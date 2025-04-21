@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Scraper</title>
+</head>
+<body>
+  <h1>Enter URL to Scrape</h1>
+  <form id="scrape-form">
+    <input type="text" id="url" placeholder="https://example.com" required style="width:300px"/>
+    <button type="submit">Scrape</button>
+  </form>
+  <script>
+    document.getElementById('scrape-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const url = document.getElementById('url').value;
+      try {
+        const res = await fetch('/scrape', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({url})
+        });
+        if(!res.ok) throw new Error('Scrape failed');
+        const blob = await res.blob();
+        const dlUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = dlUrl; a.download='scraped_data.csv';
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(dlUrl);
+      } catch(err) {
+        alert(err.message);
+      }
+    });
+  </script>
+</body>
+</html>
