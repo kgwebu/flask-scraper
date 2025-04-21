@@ -42,8 +42,10 @@ def scrape():
     writer = csv.DictWriter(si, fieldnames=['url','title','content'])
     writer.writeheader(); writer.writerows(rows)
     mem = io.BytesIO(); mem.write(si.getvalue().encode()); mem.seek(0); si.close()
-    return send_file(mem, mimetype='text/csv', as_attachment=True,
-                     attachment_filename='scraped_data.csv')
+    return send_file(mem,
+                 mimetype='text/csv',
+                 as_attachment=True,
+                 download_name='scraped_data.csv')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
